@@ -1,0 +1,209 @@
+swagger: "2.0"
+info:
+  title: Casdoor API
+  description: Documentation of Casdoor API
+  version: 1.0.0
+  contact:
+    email: admin@casbin.org
+basePath: /
+paths:
+  /api/add-user:
+    post:
+      tags:
+        - api
+      description: add user
+      operationId: ApiController.AddUser
+      parameters:
+        - in: query
+          name: name
+          description: 名称
+          required: true
+          type: string
+        - in: query
+          name: displayName
+          description: 昵称
+          type: string
+        - in: query
+          name: password
+          description: 密码
+          required: true
+          type: string
+        - in: query
+          name: phone
+          description: 电话号码
+          required: true
+          type: string
+        - in: query
+          name: countryCode
+          description: "国际区号（默认CN）"
+          required: false
+          enum:
+            - CN
+            - JP
+            - US
+          default: CN
+          type: string
+      responses:
+        "200":
+          description: '"成功"'
+          schema:
+            $ref: '#/definitions/controllersResponse'
+  /api/login:
+    post:
+      tags:
+        - api
+      description: login
+      operationId: ApiController.Login
+      parameters:
+        - in: query
+          name: username
+          description: 用户名/号码
+          required: true
+          type: string
+        - in: query
+          name: organization
+          description: 组织
+          required: true
+          type: string
+        - in: query
+          name: countryCode
+          description: "国际区号（默认CN）"
+          required: false
+          enum:
+            - CN
+            - JP
+            - US
+          default: CN
+          type: string
+        - in: query
+          name: code
+          description: 验证码
+          required: true
+          type: string
+        - in: query
+          name: type
+          description: 类型：token
+          required: true
+          type: string
+        - in: query
+          name: application
+          description: 应用名称
+          required: true
+          type: string
+      responses:
+        "200":
+          description: '成功'
+          schema:
+            $ref: '#/definitions/controllersResponse'
+  /api/send-verification-code:
+    post:
+      tags:
+        - api
+      description: '发送验证码'
+      operationId: ApiController.SendVerificationCode
+      parameters:
+        - in: query
+          name: dest
+          description: 发送手机号
+          required: true
+          type: string
+        - in: query
+          name: countryCode
+          description: "国际区号（默认CN）"
+          required: false
+          enum:
+            - CN
+            - JP
+            - US
+          default: CN
+          type: string
+        - in: query
+          name: applicationId
+          description: 应用id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: '"成功"'
+          schema:
+            $ref: '#/definitions/controllersResponse'
+  /api/update-provider:
+    post:
+      tags:
+        - api
+      description: update provider
+      operationId: ApiController.UpdateProvider
+      parameters:
+        - in: query
+          name: clientId
+          description: clientId
+          required: true
+          type: string
+        - in: query
+          name: clientSecret
+          description: clientSecret
+          required: true
+          type: string
+        - in: query
+          name: signName
+          description: 签名
+          required: true
+          type: string
+        - in: query
+          name: templateCode
+          description: 模板代码
+          required: true
+          type: string
+      responses:
+        "200":
+          description: '"成功"'
+          schema:
+            $ref: '#/definitions/controllersResponse'
+
+  /api/get-user:
+    post:
+      tags:
+        - api
+      description: get user by token
+      operationId: ApiController.GetUserByToken
+      responses:
+        "200":
+          description: '成功'
+          schema:
+            $ref: '#/definitions/controllersResponse'
+
+definitions:
+  controllersResponse:
+    title: Response
+    type: object
+    properties:
+      data:
+        type: string
+      data2:
+        type: string
+      msg:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+      sub:
+        type: string
+  objectModel:
+    title: Model
+    type: object
+    properties:
+      createdTime:
+        type: string
+      description:
+        type: string
+      displayName:
+        type: string
+      isEnabled:
+        type: boolean
+      modelText:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
