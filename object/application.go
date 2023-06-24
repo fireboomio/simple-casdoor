@@ -1,6 +1,8 @@
 package object
 
-import "casdoor/util"
+import (
+	"casdoor/util"
+)
 
 type Application struct {
 	Owner                string      `xorm:"varchar(100) notnull pk" json:"owner"`
@@ -17,7 +19,7 @@ type Application struct {
 
 func AddApplication(application *Application) (bool, error) {
 	if application.Owner == "" {
-		application.Owner = "admin"
+		application.Owner = "fireboom"
 	}
 	if application.Organization == "" {
 		application.Organization = "built-in"
@@ -33,6 +35,12 @@ func AddApplication(application *Application) (bool, error) {
 
 func GetApplication(id string) (*Application, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
+	//tokens := strings.Split(id, "_")
+	//var owner, name string
+	//if len(tokens) > 1 {
+	//	owner = tokens[0]
+	//	name = strings.Join(tokens[1:], "_")
+	//}
 	return getApplication(owner, name)
 }
 

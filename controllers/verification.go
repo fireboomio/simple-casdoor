@@ -22,11 +22,15 @@ const (
 // @Accept multipart/form-data
 // @Param dest 				query string true "发送手机号"
 // @Param countryCode 		query string false "国际区号（默认CN）" Enums(CN, US, JP) default(CN)
-// @Param applicationId 	query string true "应用id"
 // @Success 200 {object} controllers.Response  "成功"
 // @router /send-verification-code [post]
 func (c *ApiController) SendVerificationCode() {
-	var vform form.VerificationForm
+	var vform = form.VerificationForm{
+		CaptchaType:   "none",
+		Type:          "phone",
+		Method:        "login",
+		ApplicationId: "fireboom/fireboom-built-in",
+	}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vform)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -34,9 +38,6 @@ func (c *ApiController) SendVerificationCode() {
 	}
 	remoteAddr := util.GetIPFromRequest(c.Ctx.Request)
 
-	vform.CaptchaType = "none"
-	vform.Type = "phone"
-	vform.Method = "login"
 	if msg := vform.CheckParameter(form.SendVerifyCode, c.GetAcceptLanguage()); msg != "" {
 		c.ResponseError(msg)
 		return

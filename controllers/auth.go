@@ -146,7 +146,7 @@ func (c *ApiController) Login() {
 	} else {
 		if c.GetSessionUsername() != "" {
 			// user already signed in to Casdoor, so let the user click the avatar button to do the quick sign-in
-			application, err := object.GetApplication(fmt.Sprintf("admin/%s", authForm.Application))
+			application, err := object.GetApplication(fmt.Sprintf("fireboom/%s", authForm.Application))
 			if err != nil {
 				c.ResponseError(err.Error())
 				return

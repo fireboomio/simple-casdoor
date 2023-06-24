@@ -27,7 +27,7 @@ type Cert struct {
 
 func GetCerts(owner string) ([]*Cert, error) {
 	certs := []*Cert{}
-	err := adapter.Engine.Where("owner = ? or owner = ? ", "admin", owner).Desc("created_time").Find(&certs, &Cert{})
+	err := adapter.Engine.Where("owner = ? or owner = ? ", "fireboom", owner).Desc("created_time").Find(&certs, &Cert{})
 	if err != nil {
 		return certs, err
 	}

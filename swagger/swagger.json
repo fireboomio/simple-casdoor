@@ -166,16 +166,12 @@
                         "in": "query",
                         "name": "countryCode",
                         "description": "国际区号（默认CN）",
-                        "enum": ["CN", "US", "JP"],
+                        "enum": [
+                            "CN",
+                            "US",
+                            "JP"
+                        ],
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "applicationId",
-                        "description": "应用id",
-                        "required": true,
-                        "enum": ["fireboom/fireboom-built-in"],
                         "type": "string"
                     }
                 ],
