@@ -32,9 +32,9 @@ func (c *ApiController) AddUser() {
 		return
 	}
 
-	user.Owner = "built-in"
+	user.Owner = "builtIn"
 	user.PasswordType = "plain"
-	user.SignupApplication = "fireboom-built-in"
+	user.SignupApplication = "fireboom_builtIn"
 	c.Data["json"] = wrapActionResponse(object.AddUser(&user))
 	c.ServeJSON()
 }
@@ -68,7 +68,7 @@ func (c *ApiController) UpdateUser() {
 		return
 	}
 
-	if oldUser.Owner == "built-in" && oldUser.Name == "fireboom" && (user.Owner != "built-in" || user.Name != "fireboom") {
+	if oldUser.Owner == "builtIn" && oldUser.Name == "fireboom" && (user.Owner != "builtIn" || user.Name != "fireboom") {
 		c.ResponseError("auth:Unauthorized operation")
 		return
 	}
@@ -101,7 +101,7 @@ func (c *ApiController) DeleteUser() {
 		return
 	}
 
-	if user.Owner == "built-in" && user.Name == "fireboom" {
+	if user.Owner == "builtIn" && user.Name == "fireboom" {
 		c.ResponseError("auth:Unauthorized operation")
 		return
 	}

@@ -29,7 +29,7 @@ func (c *ApiController) SendVerificationCode() {
 		CaptchaType:   "none",
 		Type:          "phone",
 		Method:        "login",
-		ApplicationId: "fireboom/fireboom-built-in",
+		ApplicationId: "fireboom_fireboom_builtIn",
 	}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vform)
 	if err != nil {

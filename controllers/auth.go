@@ -126,7 +126,7 @@ func (c *ApiController) Login() {
 			}
 		}
 
-		application, err := object.GetApplication(fmt.Sprintf("fireboom/%s", authForm.Application))
+		application, err := object.GetApplication(fmt.Sprintf("fireboom_%s", authForm.Application))
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

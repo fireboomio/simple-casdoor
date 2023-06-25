@@ -13,7 +13,7 @@ func IsAllowed(subOwner string, subName string, method string, urlPath string) b
 		panic(err)
 	}
 
-	if user != nil && (subOwner == "built-in") {
+	if user != nil && (subOwner == "builtIn") {
 		return true
 	}
 	return false
@@ -25,7 +25,7 @@ func isAllowedInDemoMode(subOwner string, subName string, method string, urlPath
 			return true
 		} else if urlPath == "/api/update-user" {
 			// Allow ordinary users to update their own information
-			if subOwner == objOwner && subName == objName && !(subOwner == "built-in" && subName == "admin") {
+			if subOwner == objOwner && subName == objName && !(subOwner == "builtIn" && subName == "admin") {
 				return true
 			}
 			return false

@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	CasdoorApplication  = "fireboom-built-in"
-	CasdoorOrganization = "built-in"
+	CasdoorApplication  = "fireboom_builtIn"
+	CasdoorOrganization = "builtIn"
 )
 
 type Session struct {

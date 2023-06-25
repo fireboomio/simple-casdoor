@@ -62,7 +62,7 @@ func UpdateOrganization(id string, organization *Organization) (bool, error) {
 		return false, nil
 	}
 
-	if name == "built-in" {
+	if name == "builtIn" {
 		organization.Name = name
 	}
 
@@ -88,7 +88,7 @@ func AddOrganization(organization *Organization) (bool, error) {
 }
 
 func DeleteOrganization(organization *Organization) (bool, error) {
-	if organization.Name == "built-in" {
+	if organization.Name == "builtIn" {
 		return false, nil
 	}
 

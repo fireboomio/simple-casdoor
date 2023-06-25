@@ -28,7 +28,7 @@ func (form *VerificationForm) CheckParameter(checkType int, lang string) string 
 			return "general:Missing parameter" + ": dest."
 		}
 
-		if !strings.Contains(form.ApplicationId, "/") {
+		if !strings.Contains(form.ApplicationId, "_") {
 			return "verification:Wrong parameter" + ": applicationId."
 		}
 	}

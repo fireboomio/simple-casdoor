@@ -153,7 +153,7 @@ func (c *ApiController) Logout() {
 		util.LogInfo(c.Ctx, "API: [%s] logged out", user)
 
 		application := c.GetSessionApplication()
-		if application == nil || application.Name == "fireboom-built-in" {
+		if application == nil || application.Name == "fireboom_builtIn" {
 			c.ResponseOk(user)
 			return
 		}

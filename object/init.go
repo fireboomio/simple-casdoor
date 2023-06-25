@@ -15,9 +15,9 @@ func InitDb() {
 	}
 }
 
-// 初始化built-in组织
+// 初始化builtIn组织
 func initBuiltInOrganization() bool {
-	organization, err := getOrganization("fireboom", "built-in")
+	organization, err := getOrganization("fireboom", "builtIn")
 	if err != nil {
 		panic(err)
 	}
@@ -28,7 +28,7 @@ func initBuiltInOrganization() bool {
 
 	organization = &Organization{
 		Owner:       "fireboom",
-		Name:        "built-in",
+		Name:        "builtIn",
 		CreatedTime: util.GetCurrentTime(),
 		Languages:   []string{"en", "zh", "es", "fr", "de", "id", "ja", "ko", "ru", "vi", "pt"},
 	}
@@ -42,7 +42,7 @@ func initBuiltInOrganization() bool {
 
 // 若用户不存在则初始化 fireboom 用户
 func initBuiltInUser() {
-	user, err := getUser("built-in", "fireboom")
+	user, err := getUser("builtIn", "fireboom")
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +51,7 @@ func initBuiltInUser() {
 	}
 
 	user = &User{
-		Owner:             "built-in",
+		Owner:             "builtIn",
 		Name:              "fireboom",
 		CreatedTime:       util.GetCurrentTime(),
 		Id:                util.GenerateId(),
@@ -61,7 +61,7 @@ func initBuiltInUser() {
 		Email:             "admin@example.com",
 		Phone:             "12345678910",
 		CountryCode:       "CN",
-		SignupApplication: "fireboom-built-in",
+		SignupApplication: "fireboom_builtIn",
 	}
 	_, err = AddUser(user)
 	if err != nil {
@@ -89,7 +89,7 @@ func getUser(owner string, name string) (*User, error) {
 
 // 初始化fireboom应用
 func initBuiltInApplication() {
-	application, err := getApplication("fireboom", "fireboom-built-in")
+	application, err := getApplication("fireboom", "fireboom_builtIn")
 	if err != nil {
 		panic(err)
 	}
@@ -100,9 +100,9 @@ func initBuiltInApplication() {
 
 	application = &Application{
 		Owner:                "fireboom",
-		Name:                 "fireboom-built-in",
+		Name:                 "fireboom_builtIn",
 		CreatedTime:          util.GetCurrentTime(),
-		Organization:         "built-in",
+		Organization:         "builtIn",
 		RefreshExpireInHours: 168,
 		ExpireInHours:        100,
 	}
@@ -169,7 +169,7 @@ func readTokenFromFile() (string, string) {
 // 初始化私钥
 func initBuiltInCert() {
 	tokenJwtCertificate, tokenJwtPrivateKey := readTokenFromFile()
-	cert, err := getCert("fireboom", "cert-built-in")
+	cert, err := getCert("fireboom", "cert-builtIn")
 	if err != nil {
 		panic(err)
 	}
@@ -180,9 +180,9 @@ func initBuiltInCert() {
 
 	cert = &Cert{
 		Owner:           "fireboom",
-		Name:            "cert-built-in",
+		Name:            "cert-builtIn",
 		CreatedTime:     util.GetCurrentTime(),
-		DisplayName:     "Built-in Cert",
+		DisplayName:     "builtIn Cert",
 		Scope:           "JWT",
 		Type:            "x509",
 		CryptoAlgorithm: "RS256",

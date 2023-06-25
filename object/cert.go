@@ -145,7 +145,7 @@ func GetCertByApplication(application *Application) (*Cert, error) {
 }
 
 func GetDefaultCert() (*Cert, error) {
-	return getCert("fireboom", "cert-built-in")
+	return getCert("fireboom", "cert-builtIn")
 }
 
 func certChangeTrigger(oldName string, newName string) error {

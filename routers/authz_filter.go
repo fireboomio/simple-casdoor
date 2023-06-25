@@ -51,7 +51,7 @@ func getSubject(ctx *context.Context) (string, string) {
 func getObject(ctx *context.Context) (string, string) {
 	method := ctx.Request.Method
 	if method == http.MethodGet {
-		// query == "?id=built-in/fireboom"
+		// query == "?id=builtIn/fireboom"
 		id := ctx.Input.Query("id")
 		if id != "" {
 			return util.GetOwnerAndNameFromId(id)

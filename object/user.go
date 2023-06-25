@@ -68,7 +68,7 @@ func AddUser(user *User) (bool, error) {
 		return false, nil
 	}
 
-	// 查询组织，目前内置组织built-in-->user.owner
+	// 查询组织，目前内置组织builtIn-->user.owner
 	organization, _ := GetOrganizationByUser(user)
 	if organization == nil {
 		return false, nil
