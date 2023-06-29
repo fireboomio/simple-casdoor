@@ -149,6 +149,17 @@ func wrapErrorResponse(err error) *Response {
 	}
 }
 
+func wrapErrorUserResponse(err error) *UserResponse {
+	if err == nil {
+		return &UserResponse{true, ""}
+	} else {
+		return &UserResponse{
+			Success: false,
+			Data:    err.Error(),
+		}
+	}
+}
+
 func (c *ApiController) Finish() {
 	c.Controller.Finish()
 }

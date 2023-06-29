@@ -94,7 +94,7 @@ paths:
         "200":
           description: '成功'
           schema:
-            $ref: '#/definitions/controllersResponse'
+            $ref: '#/definitions/userResponse'
   /api/send-verification-code:
     post:
       tags:

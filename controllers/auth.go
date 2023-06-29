@@ -22,25 +22,30 @@ func codeToResponse(code *object.Code) *Response {
 }
 
 // 返回 AccessToken 和 RefreshToken
-func tokenToResponse(token *object.Token) *Response {
-	if token.AccessToken == "" {
-		return &Response{Status: "error", Msg: "fail to get accessToken", Data: token.AccessToken}
-	}
-	return &Response{Status: "ok", Msg: "", Data: token.AccessToken, Data2: token.RefreshToken}
+type TokenResp struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
-func (c *ApiController) HandleLoggedIn(application *object.Application, user *object.User, form *form.AuthForm) (resp *Response) {
+func tokenToResponse(token *object.Token) *UserResponse {
+	if token.AccessToken == "" {
+		return &UserResponse{Success: false, Data: "AccessToken is null"}
+	}
+	return &UserResponse{Success: true, Data: &TokenResp{token.AccessToken, token.RefreshToken}}
+}
+
+func (c *ApiController) HandleLoggedIn(application *object.Application, user *object.User, form *form.AuthForm) (resp *UserResponse) {
 	if form.Type == ResponseTypeToken || form.Type == ResponseTypeIdToken {
 		token, _ := object.GetTokenByUser(application, user, "", c.Ctx.Request.Host)
 		resp = tokenToResponse(token)
 	} else {
-		resp = wrapErrorResponse(fmt.Errorf("unknown response type: %s", form.Type))
+		resp = wrapErrorUserResponse(fmt.Errorf("unknown response type: %s", form.Type))
 	}
 	// if user did not check auto signin
-	if resp.Status == "ok" && !form.AutoSignin {
+	if resp.Success && !form.AutoSignin {
 		c.setExpireForSession()
 	}
-	if resp.Status == "ok" {
+	if resp.Success {
 		_, err := object.AddSession(&object.Session{
 			Owner:       user.Owner,
 			Name:        user.Name,
@@ -65,10 +70,10 @@ func (c *ApiController) HandleLoggedIn(application *object.Application, user *ob
 // @Param code     		  query    string  true  "验证码"
 // @Param type     		  query    string  true  "类型：token"
 // @Param application     query    string  true  "应用名称"
-// @Success 200 {object} controllers.Response  		成功
+// @Success 200 {object} controllers.UserResponse  		成功
 // @router /login [post]
 func (c *ApiController) Login() {
-	resp := &Response{}
+	resp := &UserResponse{}
 
 	var authForm form.AuthForm
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &authForm)
