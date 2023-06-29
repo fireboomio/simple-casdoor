@@ -170,7 +170,7 @@ paths:
         "200":
           description: '成功'
           schema:
-            $ref: '#/definitions/controllersResponse'
+            $ref: '#/definitions/userResponse'
 
 definitions:
   controllersResponse:
@@ -189,6 +189,14 @@ definitions:
         type: string
       sub:
         type: string
+  userResponse:
+    title: Response
+    type: object
+    properties:
+      data:
+        type: string
+      success:
+        type: boolean
   objectModel:
     title: Model
     type: object

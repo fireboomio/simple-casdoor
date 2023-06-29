@@ -76,7 +76,7 @@
                     "200": {
                         "description": "\"成功\"",
                         "schema": {
-                            "$ref": "#/definitions/controllersResponse"
+                            "$ref": "#/definitions/userResponse"
                         }
                     }
                 }
@@ -256,6 +256,18 @@
                 "sub": {
                     "type": "string"
                 }
+            }
+        },
+        "userResponse": {
+            "title": "Response",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+               "success": {
+                   "type": "boolean"
+               }
             }
         },
         "objectModel": {

@@ -113,7 +113,7 @@ func (c *ApiController) DeleteUser() {
 // GetUserByToken
 // @Title User API
 // @Description get user by token
-// @Success 200 {object} controllers.Response 成功
+// @Success 200 {object} controllers.UserResponse 成功
 // @Router  /get-user [get]
 func (c *ApiController) GetUserByToken() {
 	userId := c.Ctx.Input.CruSession.Get("username")
