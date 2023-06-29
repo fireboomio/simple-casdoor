@@ -76,7 +76,7 @@
                     "200": {
                         "description": "\"成功\"",
                         "schema": {
-                            "$ref": "#/definitions/userResponse"
+                            "$ref": "#/definitions/userTokenResponse"
                         }
                     }
                 }
@@ -263,11 +263,51 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "string"
+                    "type": "object",
+                    "properties": {
+                        "access_token" : {
+                            "type": "string"
+                        },
+                        "refresh_token" : {
+                            "type": "string"
+                        }
+                    }
                 },
                "success": {
                    "type": "boolean"
-               }
+               },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "userTokenResponse": {
+            "title": "Response",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "access_token" : {
+                            "type": "string"
+                        },
+                        "refresh_token" : {
+                            "type": "string"
+                        },
+                        "username": {
+                            "type": "string"
+                        },
+                        "expires_in": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "msg": {
+                    "type": "string"
+                }
             }
         },
         "objectModel": {

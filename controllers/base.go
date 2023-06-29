@@ -151,11 +151,12 @@ func wrapErrorResponse(err error) *Response {
 
 func wrapErrorUserResponse(err error) *UserResponse {
 	if err == nil {
-		return &UserResponse{true, ""}
+		return &UserResponse{true, "", TokenResp{}}
 	} else {
 		return &UserResponse{
 			Success: false,
-			Data:    err.Error(),
+			Msg:     err.Error(),
+			Data:    TokenResp{},
 		}
 	}
 }

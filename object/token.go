@@ -322,9 +322,9 @@ func GetTokenByUser(application *Application, user *User, scope string, host str
 
 type UserTokenInfo struct {
 	Username     string `json:"username"`
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
-	ExpiresIn    int    `json:"expiresIn"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresIn    int    `json:"expires_in"`
 }
 
 func GetUserTokenInfo(name string) (*UserTokenInfo, error) {

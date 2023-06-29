@@ -122,5 +122,5 @@ func (c *ApiController) GetUserByToken() {
 	if err != nil {
 		c.ResponseError(err.Error())
 	}
-	c.Response(true, user)
+	c.ResponseToken(true, "", *user)
 }

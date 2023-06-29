@@ -24,8 +24,15 @@ type Response struct {
 }
 
 type UserResponse struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data"`
+	Success bool      `json:"success"`
+	Msg     string    `json:"msg"`
+	Data    TokenResp `json:"data"`
+}
+
+type UserTokenResponse struct {
+	Success bool                 `json:"success"`
+	Msg     string               `json:"msg"`
+	Data    object.UserTokenInfo `json:"data"`
 }
 
 type Captcha struct {

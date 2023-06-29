@@ -29,9 +29,9 @@ type TokenResp struct {
 
 func tokenToResponse(token *object.Token) *UserResponse {
 	if token.AccessToken == "" {
-		return &UserResponse{Success: false, Data: "AccessToken is null"}
+		return &UserResponse{Success: false, Data: TokenResp{}}
 	}
-	return &UserResponse{Success: true, Data: &TokenResp{token.AccessToken, token.RefreshToken}}
+	return &UserResponse{Success: true, Data: TokenResp{token.AccessToken, token.RefreshToken}}
 }
 
 func (c *ApiController) HandleLoggedIn(application *object.Application, user *object.User, form *form.AuthForm) (resp *UserResponse) {
@@ -85,7 +85,7 @@ func (c *ApiController) Login() {
 	if authForm.Username != "" {
 		if authForm.Type == ResponseTypeLogin {
 			if c.GetSessionUsername() != "" {
-				c.ResponseError("account:Please sign out first", c.GetSessionUsername())
+				c.Response(false, "account:Please sign out first", TokenResp{})
 				return
 			}
 		}
@@ -95,10 +95,10 @@ func (c *ApiController) Login() {
 		// 密码为空--验证码登录
 		if authForm.Password == "" {
 			if user, err = object.GetUserByFields(authForm.Organization, authForm.Username); err != nil {
-				c.ResponseError(err.Error(), nil)
+				c.Response(false, err.Error(), TokenResp{})
 				return
 			} else if user == nil {
-				c.ResponseError(fmt.Sprintf("general:The user: %s doesn't exist", util.GetId(authForm.Organization, authForm.Username)))
+				c.Response(false, fmt.Sprintf("general:The user: %s doesn't exist", util.GetId(authForm.Organization, authForm.Username)), TokenResp{})
 				return
 			}
 
@@ -111,7 +111,7 @@ func (c *ApiController) Login() {
 				authForm.CountryCode = user.GetCountryCode(authForm.CountryCode)
 				var ok bool
 				if checkDest, ok = util.GetE164Number(authForm.Username, authForm.CountryCode); !ok {
-					c.ResponseError(fmt.Sprintf("verification:Phone number is invalid in your region %s", authForm.CountryCode))
+					c.Response(false, fmt.Sprintf("verification:Phone number is invalid in your region %s", authForm.CountryCode), TokenResp{})
 					return
 				}
 			}
@@ -119,26 +119,26 @@ func (c *ApiController) Login() {
 			// check result through Email or Phone
 			checkResult := object.CheckSigninCode(user, checkDest, authForm.Code, c.GetAcceptLanguage())
 			if len(checkResult) != 0 {
-				c.ResponseError(fmt.Sprintf("%s - %s", verificationCodeType, checkResult))
+				c.Response(false, checkResult, TokenResp{})
 				return
 			}
 
 			// disable the verification code
 			err := object.DisableVerificationCode(checkDest)
 			if err != nil {
-				c.ResponseError(err.Error(), nil)
+				c.Response(false, err.Error(), TokenResp{})
 				return
 			}
 		}
 
 		application, err := object.GetApplication(fmt.Sprintf("fireboom_%s", authForm.Application))
 		if err != nil {
-			c.ResponseError(err.Error())
+			c.Response(false, err.Error(), TokenResp{})
 			return
 		}
 
 		if application == nil {
-			c.ResponseError(fmt.Sprintf("auth:The application: %s does not exist", authForm.Application))
+			c.Response(false, fmt.Sprintf("auth:The application: %s does not exist", authForm.Application), TokenResp{})
 			return
 		}
 
@@ -153,12 +153,12 @@ func (c *ApiController) Login() {
 			// user already signed in to Casdoor, so let the user click the avatar button to do the quick sign-in
 			application, err := object.GetApplication(fmt.Sprintf("fireboom_%s", authForm.Application))
 			if err != nil {
-				c.ResponseError(err.Error())
+				c.Response(false, err.Error(), TokenResp{})
 				return
 			}
 
 			if application == nil {
-				c.ResponseError(fmt.Sprintf("auth:The application: %s does not exist", authForm.Application))
+				c.Response(false, fmt.Sprintf("auth:The application: %s does not exist", authForm.Application), TokenResp{})
 				return
 			}
 
@@ -170,7 +170,7 @@ func (c *ApiController) Login() {
 			record.User = user.Name
 			util.SafeGoroutine(func() { object.AddRecord(record) })
 		} else {
-			c.ResponseError(fmt.Sprintf("auth:Unknown authentication type (not password or provider), form = %s", util.StructToJson(authForm)))
+			c.Response(false, fmt.Sprintf("auth:Unknown authentication type (not password or provider), form = %s", util.StructToJson(authForm)), TokenResp{})
 			return
 		}
 	}

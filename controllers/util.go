@@ -25,8 +25,14 @@ func (c *ApiController) ResponseOk(data ...interface{}) {
 	c.ResponseJsonData(resp, data...)
 }
 
-func (c *ApiController) Response(success bool, data interface{}) {
-	resp := &UserResponse{success, data}
+func (c *ApiController) Response(success bool, msg string, data TokenResp) {
+	resp := &UserResponse{success, msg, data}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *ApiController) ResponseToken(success bool, msg string, data object.UserTokenInfo) {
+	resp := &UserTokenResponse{success, msg, data}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
