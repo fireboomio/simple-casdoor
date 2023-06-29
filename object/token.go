@@ -319,3 +319,37 @@ func GetTokenByUser(application *Application, user *User, scope string, host str
 
 	return token, nil
 }
+
+type UserTokenInfo struct {
+	Username     string `json:"username"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+	ExpiresIn    int    `json:"expiresIn"`
+}
+
+func GetUserTokenInfo(name string) (*UserTokenInfo, error) {
+	if name == "" {
+		return nil, fmt.Errorf("name is null")
+	}
+	token := Token{
+		Owner:       "fireboom",
+		Application: "fireboom_builtIn",
+		User:        name,
+	}
+	existed, err := adapter.Engine.Table("token").Desc("created_time").Get(&token)
+	if err != nil {
+		return nil, err
+	}
+
+	if existed {
+		userInfo := UserTokenInfo{
+			AccessToken:  token.AccessToken,
+			RefreshToken: token.RefreshToken,
+			ExpiresIn:    token.ExpiresIn,
+			Username:     name,
+		}
+		return &userInfo, nil
+	} else {
+		return nil, nil
+	}
+}

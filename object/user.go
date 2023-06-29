@@ -235,10 +235,10 @@ func GetUserByPhone(owner string, phone string) (*User, error) {
 	}
 }
 
-func GetUserByUserId(userId string) (*User, error) {
+func GetUserByUserId(userId string) (*UserTokenInfo, error) {
 	if userId == "" {
 		return nil, fmt.Errorf("userId is blank")
 	}
-	owner, name := util.GetOwnerAndNameFromId(userId)
-	return GetUserByField(owner, "name", name)
+	_, name := util.GetOwnerAndNameFromId(userId)
+	return GetUserTokenInfo(name)
 }

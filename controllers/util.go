@@ -25,6 +25,12 @@ func (c *ApiController) ResponseOk(data ...interface{}) {
 	c.ResponseJsonData(resp, data...)
 }
 
+func (c *ApiController) Response(success bool, data interface{}) {
+	resp := &UserResponse{success, data}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 // ResponseError ...
 func (c *ApiController) ResponseError(error string, data ...interface{}) {
 	resp := &Response{Status: "error", Msg: error}

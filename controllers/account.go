@@ -23,6 +23,11 @@ type Response struct {
 	Data2  interface{} `json:"data2"`
 }
 
+type UserResponse struct {
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data"`
+}
+
 type Captcha struct {
 	Type          string `json:"type"`
 	AppKey        string `json:"appKey"`
