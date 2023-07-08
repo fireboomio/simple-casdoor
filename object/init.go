@@ -30,7 +30,6 @@ func initBuiltInOrganization() bool {
 		Owner:       "fireboom",
 		Name:        "builtIn",
 		CreatedTime: util.GetCurrentTime(),
-		Languages:   []string{"en", "zh", "es", "fr", "de", "id", "ja", "ko", "ru", "vi", "pt"},
 	}
 	_, err = AddOrganization(organization)
 	if err != nil {

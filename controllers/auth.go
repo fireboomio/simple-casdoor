@@ -9,22 +9,24 @@ import (
 	"sync"
 )
 
-var (
-	lock sync.RWMutex
+type (
+	authAction struct {
+		login func(authForm form.AuthForm) (user *object.User, err error)
+	}
+	// TokenResp 返回 AccessToken 和 RefreshToken
+	TokenResp struct {
+		AccessToken  string `json:"access_token"`
+		RefreshToken string `json:"refresh_token"`
+	}
 )
 
-func codeToResponse(code *object.Code) *Response {
-	if code.Code == "" {
-		return &Response{Status: "error", Msg: code.Message, Data: code.Code}
-	}
+var (
+	lock          sync.RWMutex
+	authActionMap map[string]*authAction
+)
 
-	return &Response{Status: "ok", Msg: "", Data: code.Code}
-}
-
-// 返回 AccessToken 和 RefreshToken
-type TokenResp struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+func init() {
+	authActionMap = make(map[string]*authAction, 0)
 }
 
 func tokenToResponse(token *object.Token) *UserResponse {
@@ -68,7 +70,9 @@ func (c *ApiController) HandleLoggedIn(application *object.Application, user *ob
 // @Param organization    query    string  true "组织"
 // @Param countryCode     query    string  false "国际区号（默认CN）" Enums(CN, US, JP) default(CN)
 // @Param code     		  query    string  true  "验证码"
+// @Param password     	  query    string  true  "密码"
 // @Param type     		  query    string  true  "类型：token"
+// @Param loginType       query    string  true  "登录类型" Enums(sms, password)
 // @Param application     query    string  true  "应用名称"
 // @Success 200 {object} controllers.UserResponse  		成功
 // @router /login [post]
@@ -92,43 +96,10 @@ func (c *ApiController) Login() {
 
 		var user *object.User
 
-		// 密码为空--验证码登录
-		if authForm.Password == "" {
-			if user, err = object.GetUserByFields(authForm.Organization, authForm.Username); err != nil {
-				c.Response(false, err.Error(), TokenResp{})
-				return
-			} else if user == nil {
-				c.Response(false, fmt.Sprintf("general:The user: %s doesn't exist", util.GetId(authForm.Organization, authForm.Username)), TokenResp{})
-				return
-			}
-
-			verificationCodeType := object.GetVerifyType(authForm.Username)
-			var checkDest string
-
-			//验证码类型==phone
-			//校验号码和区号是否合法
-			if verificationCodeType == object.VerifyTypePhone {
-				authForm.CountryCode = user.GetCountryCode(authForm.CountryCode)
-				var ok bool
-				if checkDest, ok = util.GetE164Number(authForm.Username, authForm.CountryCode); !ok {
-					c.Response(false, fmt.Sprintf("verification:Phone number is invalid in your region %s", authForm.CountryCode), TokenResp{})
-					return
-				}
-			}
-
-			// check result through Email or Phone
-			checkResult := object.CheckSigninCode(user, checkDest, authForm.Code, c.GetAcceptLanguage())
-			if len(checkResult) != 0 {
-				c.Response(false, checkResult, TokenResp{})
-				return
-			}
-
-			// disable the verification code
-			err := object.DisableVerificationCode(checkDest)
-			if err != nil {
-				c.Response(false, err.Error(), TokenResp{})
-				return
-			}
+		user, err = authActionMap[authForm.LoginType].login(authForm)
+		if err != nil {
+			c.Response(false, err.Error(), TokenResp{})
+			return
 		}
 
 		application, err := object.GetApplication(fmt.Sprintf("fireboom_%s", authForm.Application))

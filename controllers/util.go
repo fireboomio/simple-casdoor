@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"casdoor/conf"
 	"casdoor/object"
 	"fmt"
 )
@@ -41,12 +40,6 @@ func (c *ApiController) ResponseToken(success bool, msg string, data object.User
 func (c *ApiController) ResponseError(error string, data ...interface{}) {
 	resp := &Response{Status: "error", Msg: error}
 	c.ResponseJsonData(resp, data...)
-}
-
-// GetAcceptLanguage ...
-func (c *ApiController) GetAcceptLanguage() string {
-	language := c.Ctx.Request.Header.Get("Accept-Language")
-	return conf.GetLanguage(language)
 }
 
 func (c *ApiController) RequireSignedIn() (string, bool) {

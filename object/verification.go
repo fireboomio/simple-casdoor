@@ -1,7 +1,6 @@
 package object
 
 import (
-	"casdoor/conf"
 	"casdoor/util"
 	"errors"
 	"fmt"
@@ -63,7 +62,7 @@ func IsAllowSend(user *User, remoteAddr, recordType string) error {
 	return nil
 }
 
-func CheckVerificationCode(dest, code, lang string) *VerifyResult {
+func CheckVerificationCode(dest, code string) *VerifyResult {
 	record, err := getVerificationRecord(dest)
 	if err != nil {
 		panic(err)
@@ -73,7 +72,7 @@ func CheckVerificationCode(dest, code, lang string) *VerifyResult {
 		return &VerifyResult{noRecordError, "verification:Code has not been sent yet!"}
 	}
 
-	timeout, err := conf.GetConfigInt64("verificationCodeTimeout")
+	var timeout int64 = 10
 	if err != nil {
 		panic(err)
 	}
@@ -90,8 +89,8 @@ func CheckVerificationCode(dest, code, lang string) *VerifyResult {
 	return &VerifyResult{VerificationSuccess, ""}
 }
 
-func CheckSigninCode(user *User, dest, code, lang string) string {
-	result := CheckVerificationCode(dest, code, lang)
+func CheckSigninCode(user *User, dest, code string) string {
+	result := CheckVerificationCode(dest, code)
 	switch result.Code {
 	case VerificationSuccess:
 		return ""

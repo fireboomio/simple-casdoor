@@ -1,7 +1,8 @@
 package form
 
 type AuthForm struct {
-	Type string `json:"type"`
+	Type      string `json:"type"`
+	LoginType string `json:"loginType"`
 
 	Organization string `json:"organization"`
 	Username     string `json:"username"`

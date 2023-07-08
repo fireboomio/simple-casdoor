@@ -1,7 +1,6 @@
 package object
 
 import (
-	"casdoor/conf"
 	"fmt"
 	"github.com/beego/beego"
 	_ "github.com/denisenkom/go-mssqldb" // db = mssql
@@ -22,10 +21,6 @@ type Adapter struct {
 var adapter *Adapter
 
 func InitConfig() {
-	err := beego.LoadAppConfig("ini", "../conf/app.conf")
-	if err != nil {
-		panic(err)
-	}
 	beego.BConfig.WebConfig.Session.SessionOn = true
 	InitAdapter()
 	CreateTables(true)
@@ -54,8 +49,7 @@ func (a *Adapter) CreateDatabase() error {
 }
 
 func (a *Adapter) createTable() {
-	showSql := conf.GetConfigBool("showSql")
-	a.Engine.ShowSQL(showSql)
+	a.Engine.ShowSQL(false)
 
 	err := a.Engine.Sync2(new(Organization))
 	if err != nil {
@@ -104,10 +98,9 @@ func (a *Adapter) createTable() {
 }
 
 func InitAdapter() {
-	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName(), conf.GetConfigString("dbName"))
+	adapter = NewAdapter("mysql", "root:285637zq@tcp(localhost:3306)/", "casdoor_test")
 
-	tableNamePrefix := conf.GetConfigString("tableNamePrefix")
-	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, tableNamePrefix)
+	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, "")
 	adapter.Engine.SetTableMapper(tbMapper)
 }
 

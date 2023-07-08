@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"casdoor/conf"
 	"casdoor/object"
 	"casdoor/util"
 	"fmt"
@@ -31,11 +30,6 @@ func responseError(ctx *context.Context, error string, data ...interface{}) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func getAcceptLanguage(ctx *context.Context) string {
-	language := ctx.Request.Header.Get("Accept-Language")
-	return conf.GetLanguage(language)
 }
 
 func denyRequest(ctx *context.Context) {

@@ -3,33 +3,12 @@ package object
 import (
 	"casdoor/util"
 	"fmt"
-
-	"github.com/xorm-io/builder"
-	"github.com/xorm-io/core"
 )
 
 type Organization struct {
-	Owner       string   `xorm:"varchar(100) notnull pk" json:"owner"`
-	Name        string   `xorm:"varchar(100) notnull pk" json:"name"`
-	CreatedTime string   `xorm:"varchar(100)" json:"createdTime"`
-	Languages   []string `xorm:"varchar(255)" json:"languages"`
-}
-
-func GetOrganizations(owner string, name ...string) ([]*Organization, error) {
-	organizations := []*Organization{}
-	if name != nil && len(name) > 0 {
-		err := adapter.Engine.Desc("created_time").Where(builder.In("name", name)).Find(&organizations)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		err := adapter.Engine.Desc("created_time").Find(&organizations, &Organization{Owner: owner})
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return organizations, nil
+	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
+	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
+	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 }
 
 func getOrganization(owner string, name string) (*Organization, error) {
@@ -80,19 +59,6 @@ func UpdateOrganization(id string, organization *Organization) (bool, error) {
 
 func AddOrganization(organization *Organization) (bool, error) {
 	affected, err := adapter.Engine.Insert(organization)
-	if err != nil {
-		return false, err
-	}
-
-	return affected != 0, nil
-}
-
-func DeleteOrganization(organization *Organization) (bool, error) {
-	if organization.Name == "builtIn" {
-		return false, nil
-	}
-
-	affected, err := adapter.Engine.ID(core.PK{organization.Owner, organization.Name}).Delete(&Organization{})
 	if err != nil {
 		return false, err
 	}

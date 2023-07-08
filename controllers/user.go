@@ -26,7 +26,7 @@ func (c *ApiController) AddUser() {
 		return
 	}
 
-	msg := object.CheckUsername(user.Name, c.GetAcceptLanguage())
+	msg := object.CheckUsername(user.Name)
 	if msg != "" {
 		c.ResponseError(msg)
 		return
@@ -73,7 +73,7 @@ func (c *ApiController) UpdateUser() {
 		return
 	}
 
-	if msg := object.CheckUpdateUser(oldUser, &user, c.GetAcceptLanguage()); msg != "" {
+	if msg := object.CheckUpdateUser(oldUser, &user); msg != "" {
 		c.ResponseError(msg)
 		return
 	}

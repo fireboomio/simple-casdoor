@@ -324,7 +324,7 @@ type UserTokenInfo struct {
 	Username     string `json:"username"`
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-	ExpiresIn    int    `json:"expires_in"`
+	ExpiresIn    string `json:"expires_in"`
 }
 
 func GetUserTokenInfo(name string) (*UserTokenInfo, error) {
@@ -345,7 +345,7 @@ func GetUserTokenInfo(name string) (*UserTokenInfo, error) {
 		userInfo := UserTokenInfo{
 			AccessToken:  token.AccessToken,
 			RefreshToken: token.RefreshToken,
-			ExpiresIn:    token.ExpiresIn,
+			ExpiresIn:    string(token.ExpiresIn),
 			Username:     name,
 		}
 		return &userInfo, nil

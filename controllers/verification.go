@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"casdoor/captcha"
 	"casdoor/form"
 	"casdoor/object"
 	"casdoor/util"
@@ -38,7 +37,7 @@ func (c *ApiController) SendVerificationCode() {
 	}
 	remoteAddr := util.GetIPFromRequest(c.Ctx.Request)
 
-	if msg := vform.CheckParameter(form.SendVerifyCode, c.GetAcceptLanguage()); msg != "" {
+	if msg := vform.CheckParameter(form.SendVerifyCode); msg != "" {
 		c.ResponseError(msg)
 		return
 	}
@@ -98,34 +97,6 @@ func (c *ApiController) SendVerificationCode() {
 	}
 }
 
-func (c *ApiController) VerifyCaptcha() {
-	var vform form.VerificationForm
-	err := c.ParseForm(&vform)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	if msg := vform.CheckParameter(form.VerifyCaptcha, c.GetAcceptLanguage()); msg != "" {
-		c.ResponseError(msg)
-		return
-	}
-
-	provider := captcha.GetCaptchaProvider(vform.CaptchaType)
-	if provider == nil {
-		c.ResponseError("verification:Invalid captcha provider.")
-		return
-	}
-
-	isValid, err := provider.VerifyCaptcha(vform.CaptchaToken, vform.ClientSecret)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(isValid)
-}
-
 func (c *ApiController) VerifyCode() {
 	var authForm form.AuthForm
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &authForm)
@@ -173,7 +144,7 @@ func (c *ApiController) VerifyCode() {
 		}
 	}
 
-	if result := object.CheckVerificationCode(checkDest, authForm.Code, c.GetAcceptLanguage()); result.Code != object.VerificationSuccess {
+	if result := object.CheckVerificationCode(checkDest, authForm.Code); result.Code != object.VerificationSuccess {
 		c.ResponseError(result.Msg)
 		return
 	}

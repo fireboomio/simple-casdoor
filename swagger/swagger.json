@@ -117,7 +117,14 @@
                         "in": "formData",
                         "name": "code",
                         "description": "验证码",
-                        "required": true,
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "description": "密码",
+                        "required": false,
                         "type": "string"
                     },
                     {
@@ -126,6 +133,14 @@
                         "description": "类型：token",
                         "required": true,
                         "enum": ["token"],
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "loginType",
+                        "description": "登录类型",
+                        "required": true,
+                        "enum": ["sms", "password"],
                         "type": "string"
                     },
                     {

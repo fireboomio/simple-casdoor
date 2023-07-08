@@ -22,7 +22,7 @@ const (
 	VerifyCaptcha  = 1
 )
 
-func (form *VerificationForm) CheckParameter(checkType int, lang string) string {
+func (form *VerificationForm) CheckParameter(checkType int) string {
 	if checkType == SendVerifyCode {
 		if form.Dest == "" {
 			return "general:Missing parameter" + ": dest."

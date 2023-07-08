@@ -61,7 +61,7 @@ func (c *ApiController) Signup() {
 		return
 	}
 
-	application, err := object.GetApplication(fmt.Sprintf("fireboom/%s", authForm.Application))
+	application, err := object.GetApplication(fmt.Sprintf("fireboom_%s", authForm.Application))
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -73,7 +73,7 @@ func (c *ApiController) Signup() {
 		return
 	}
 
-	msg := object.CheckUserSignup(application, organization, &authForm, c.GetAcceptLanguage())
+	msg := object.CheckUserSignup(application, organization, &authForm)
 	if msg != "" {
 		c.ResponseError(msg)
 		return
@@ -82,7 +82,7 @@ func (c *ApiController) Signup() {
 	var checkPhone string
 	if authForm.Phone != "" {
 		checkPhone, _ = util.GetE164Number(authForm.Phone, authForm.CountryCode)
-		checkResult := object.CheckVerificationCode(checkPhone, authForm.PhoneCode, c.GetAcceptLanguage())
+		checkResult := object.CheckVerificationCode(checkPhone, authForm.PhoneCode)
 		if checkResult.Code != object.VerificationSuccess {
 			c.ResponseError(checkResult.Msg)
 			return

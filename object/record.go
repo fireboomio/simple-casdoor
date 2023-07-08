@@ -1,7 +1,6 @@
 package object
 
 import (
-	"casdoor/conf"
 	"casdoor/util"
 	"strings"
 
@@ -11,7 +10,7 @@ import (
 var logPostOnly bool
 
 func init() {
-	logPostOnly = conf.GetConfigBool("logPostOnly")
+	logPostOnly = true
 }
 
 type Record struct {

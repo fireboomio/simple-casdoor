@@ -78,12 +78,25 @@ paths:
         - in: query
           name: code
           description: 验证码
-          required: true
+          required: false
+          type: string
+        - in: query
+          name: password
+          description: 密码
+          required: false
           type: string
         - in: query
           name: type
           description: 类型：token
           required: true
+          type: string
+        - in: query
+          name: loginType
+          description: 登录类型
+          required: true
+          enum:
+            - sms
+            - password
           type: string
         - in: query
           name: application

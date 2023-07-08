@@ -1,7 +1,6 @@
 package object
 
 import (
-	"casdoor/cred"
 	"casdoor/form"
 	"casdoor/util"
 	"fmt"
@@ -12,14 +11,21 @@ import (
 var (
 	reWhiteSpace     *regexp.Regexp
 	reFieldWhiteList *regexp.Regexp
+	CredActionMap    map[string]CredManager
 )
+
+type CredManager interface {
+	GetHashedPassword(password string, userSalt string) string
+	IsPasswordCorrect(password string, passwordHash string, userSalt string) bool
+}
 
 func init() {
 	reWhiteSpace, _ = regexp.Compile(`\s`)
 	reFieldWhiteList, _ = regexp.Compile(`^[A-Za-z0-9]+$`)
+	CredActionMap = make(map[string]CredManager, 0)
 }
 
-func CheckUserPassword(organization string, username string, password string, lang string) (*User, string) {
+func CheckUserPassword(organization string, username string, password string) (*User, string) {
 	user, err := GetUserByFields(organization, username)
 	if err != nil {
 		panic(err)
@@ -29,14 +35,14 @@ func CheckUserPassword(organization string, username string, password string, la
 		return nil, fmt.Sprintf("general:The user: %s doesn't exist", util.GetId(organization, username))
 	}
 
-	if msg := CheckPassword(user, password, lang); msg != "" {
+	if msg := CheckPassword(user, password); msg != "" {
 		return nil, msg
 	}
 
 	return user, ""
 }
 
-func CheckPassword(user *User, password string, lang string) string {
+func CheckPassword(user *User, password string) string {
 	organization, err := GetOrganizationByUser(user)
 	if err != nil {
 		panic(err)
@@ -51,18 +57,14 @@ func CheckPassword(user *User, password string, lang string) string {
 		passwordType = "plain"
 	}
 
-	credManager := cred.GetCredManager(passwordType)
-	if credManager != nil {
-		if credManager.IsPasswordCorrect(password, user.Password, user.PasswordSalt) {
-			return ""
-		}
-		return fmt.Sprintf("check: error password: %s", password)
-	} else {
-		return fmt.Sprintf(lang, "check:unsupported password type: %s", passwordType)
+	credManager := CredActionMap[passwordType]
+	if credManager.IsPasswordCorrect(password, user.Password, user.PasswordSalt) {
+		return ""
 	}
+	return fmt.Sprintf("check: error password: %s", password)
 }
 
-func CheckUserSignup(application *Application, organization *Organization, form *form.AuthForm, lang string) string {
+func CheckUserSignup(application *Application, organization *Organization, form *form.AuthForm) string {
 	if organization == nil {
 		return "check:Organization does not exist"
 	}
@@ -80,7 +82,7 @@ func CheckUserSignup(application *Application, organization *Organization, form 
 		return "check:Username cannot contain white spaces"
 	}
 
-	if msg := CheckUsername(form.Username, lang); msg != "" {
+	if msg := CheckUsername(form.Username); msg != "" {
 		return msg
 	}
 
@@ -111,7 +113,7 @@ func CheckUserSignup(application *Application, organization *Organization, form 
 	return ""
 }
 
-func CheckUsername(username string, lang string) string {
+func CheckUsername(username string) string {
 	if username == "" {
 		return "check:Empty username."
 	} else if len(username) > 39 {
@@ -131,13 +133,13 @@ func CheckUsername(username string, lang string) string {
 	return ""
 }
 
-func CheckUpdateUser(oldUser, user *User, lang string) string {
+func CheckUpdateUser(oldUser, user *User) string {
 	if user.DisplayName == "" {
 		return "user:Display name cannot be empty"
 	}
 
 	if oldUser.Name != user.Name {
-		if msg := CheckUsername(user.Name, lang); msg != "" {
+		if msg := CheckUsername(user.Name); msg != "" {
 			return msg
 		}
 		if HasUserByField(user.Owner, "name", user.Name) {
